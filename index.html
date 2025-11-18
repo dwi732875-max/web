@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Frozen Food - Dingin Segar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #17a2b8;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 25px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23000000" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--light);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--light);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1 1 300px;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background-color: #d35400;
+        }
+
+        .btn-info {
+            background-color: var(--info);
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary);
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profit-margin {
+            font-weight: bold;
+            color: var(--success);
+        }
+
+        .low-stock {
+            color: var(--warning);
+            font-weight: bold;
+        }
+
+        .out-of-stock {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-snowflake"></i>
+                    <div>
+                        <h1>Dingin Segar Frozen Food</h1>
+                        <p class="subtitle">Sistem Manajemen Produk dan Stok</p>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalProduk">0</div>
+                        <div class="stat-label">Total Produk</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalStok">0</div>
+                        <div class="stat-label">Total Stok</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalKategori">0</div>
+                        <div class="stat-label">Kategori</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h2>
+            </div>
+            <form id="produkForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="kode_produk">Kode Produk</label>
+                        <input type="text" id="kode_produk" name="kode_produk" required placeholder="FF-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="nama_produk">Nama Produk</label>
+                        <input type="text" id="nama_produk" name="nama_produk" required placeholder="Nugget Ayam Premium">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="kategori">Kategori</label>
+                        <select id="kategori" name="kategori" required>
+                            <option value="">Pilih Kategori</option>
+                            <option value="Ayam">Ayam</option>
+                            <option value="Daging Sapi">Daging Sapi</option>
+                            <option value="Ikan">Ikan</option>
+                            <option value="Seafood">Seafood</option>
+                            <option value="Sayuran">Sayuran</option>
+                            <option value="Olahan">Olahan</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="supplier">Supplier</label>
+                        <input type="text" id="supplier" name="supplier" required placeholder="Supplier ABC">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="harga_beli">Harga Beli (Rp)</label>
+                        <input type="number" id="harga_beli" name="harga_beli" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="harga_jual">Harga Jual (Rp)</label>
+                        <input type="number" id="harga_jual" name="harga_jual" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stok">Stok</label>
+                        <input type="number" id="stok" name="stok" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="satuan">Satuan</label>
+                        <select id="satuan" name="satuan" required>
+                            <option value="">Pilih Satuan</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="pcs">Pieces (pcs)</option>
+                            <option value="pack">Pack</option>
+                            <option value="dus">Dus</option>
+                            <option value="liter">Liter</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tanggal_kadaluarsa">Tanggal Kadaluarsa</label>
+                        <input type="date" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi Produk</label>
+                    <textarea id="deskripsi" name="deskripsi" rows="3" placeholder="Deskripsi produk..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Produk</button>
+                <button type="button" id="cancelBtn" class="hidden"><i class="fas fa-times"></i> Batal</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-boxes"></i> Daftar Produk</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="filterKategori">Filter Kategori:</label>
+                        <select id="filterKategori">
+                            <option value="">Semua</option>
+                            <option value="Ayam">Ayam</option>
+                            <option value="Daging Sapi">Daging Sapi</option>
+                            <option value="Ikan">Ikan</option>
+                            <option value="Seafood">Seafood</option>
+                            <option value="Sayuran">Sayuran</option>
+                            <option value="Olahan">Olahan</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterStok">Filter Stok:</label>
+                        <select id="filterStok">
+                            <option value="">Semua</option>
+                            <option value="tersedia">Stok Tersedia</option>
+                            <option value="menipis">Stok Menipis</option>
+                            <option value="habis">Stok Habis</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="alertMessage" class="alert hidden"></div>
+            
+            <table id="produkTable">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Harga Beli</th>
+                        <th>Harga Jual</th>
+                        <th>Margin</th>
+                        <th>Stok</th>
+                        <th>Supplier</th>
+                        <th>Kadaluarsa</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="produkBody">
+                    <tr>
+                        <td colspan="10" style="text-align: center;">Memuat data produk...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Variabel global untuk menyimpan data yang sedang diedit
+        let currentEditId = null;
+        const API_BASE = 'api/';
+
+        // Format Rupiah
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        }
+
+        // Fungsi untuk menampilkan pesan alert
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                alertDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Fungsi untuk mendapatkan badge stok
+        function getStokBadge(stok) {
+            if (stok > 50) {
+                return `<span class="badge badge-success">${stok}</span>`;
+            } else if (stok > 10) {
+                return `<span class="badge badge-warning">${stok}</span>`;
+            } else if (stok > 0) {
+                return `<span class="badge badge-danger">${stok} (Menipis)</span>`;
+            } else {
+                return `<span class="badge badge-danger">Habis</span>`;
+            }
+        }
+
+        // Fungsi untuk memuat data produk dari API
+        async function loadProdukData() {
+            try {
+                const response = await fetch(API_BASE + 'get_produk.php');
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const result = await response.json();
+                
+                const tbody = document.getElementById('produkBody');
+                tbody.innerHTML = '';
+                
+                if (!result.data || result.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Tidak ada data produk</td></tr>';
+                    return;
+                }
+                
+                // Filter data
+                const filterKategori = document.getElementById('filterKategori').value;
+                const filterStok = document.getElementById('filterStok').value;
+                
+                const filteredData = result.data.filter(produk => {
+                    let kategoriMatch = filterKategori === '' || produk.kategori === filterKategori;
+                    let stokMatch = true;
+                    
+                    if (filterStok === 'tersedia') {
+                        stokMatch = produk.stok > 50;
+                    } else if (filterStok === 'menipis') {
+                        stokMatch = produk.stok <= 50 && produk.stok > 0;
+                    } else if (filterStok === 'habis') {
+                        stokMatch = produk.stok === 0;
+                    }
+                    
+                    return kategoriMatch && stokMatch;
+                });
+                
+                if (filteredData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Tidak ada data yang sesuai dengan filter</td></tr>';
+                    return;
+                }
+                
+                filteredData.forEach(produk => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${produk.kode_produk}</td>
+                        <td>${produk.nama_produk}</td>
+                        <td><span class="badge badge-info">${produk.kategori}</span></td>
+                        <td>${formatRupiah(produk.harga_beli)}</td>
+                        <td>${formatRupiah(produk.harga_jual)}</td>
+                        <td class="profit-margin">${formatRupiah(produk.margin)} (${produk.persen_margin}%)</td>
+                        <td>${getStokBadge(produk.stok)}</td>
+                        <td>${produk.supplier}</td>
+                        <td>${new Date(produk.tanggal_kadaluarsa).toLocaleDateString('id-ID')}</td>
+                        <td class="actions">
+                            <button class="action-btn btn-warning btn-edit" data-id="${produk.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn btn-danger btn-delete" data-id="${produk.id}">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                // Update statistik
+                updateStatistics(result.data);
+                
+                // Event listener untuk tombol
+                document.querySelectorAll('.btn-edit').forEach(button => {
+                    button.addEventListener('click', handleEdit);
+                });
+                
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', handleDelete);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Gagal memuat data produk. Periksa console untuk detail.', 'error');
+            }
+        }
+
+        // Fungsi untuk update statistik
+        function updateStatistics(data) {
+            const totalProduk = data.length;
+            const totalStok = data.reduce((sum, produk) => sum + produk.stok, 0);
+            const totalKategori = new Set(data.map(produk => produk.kategori)).size;
+            
+            // Update elemen statistik
+            document.getElementById('totalProduk').textContent = totalProduk;
+            document.getElementById('totalStok').textContent = totalStok;
+            document.getElementById('totalKategori').textContent = totalKategori;
+        }
+
+        // Fungsi untuk menangani pengeditan data
+        async function handleEdit(event) {
+            const id = event.target.closest('button').getAttribute('data-id');
+            
+            try {
+                const response = await fetch(API_BASE + 'get_produk.php');
+                const result = await response.json();
+                
+                const produk = result.data.find(p => p.id == id);
+                
+                if (produk) {
+                    // Isi form dengan data yang akan diedit
+                    document.getElementById('kode_produk').value = produk.kode_produk;
+                    document.getElementById('nama_produk').value = produk.nama_produk;
+                    document.getElementById('kategori').value = produk.kategori;
+                    document.getElementById('harga_beli').value = produk.harga_beli;
+                    document.getElementById('harga_jual').value = produk.harga_jual;
+                    document.getElementById('stok').value = produk.stok;
+                    document.getElementById('satuan').value = produk.satuan;
+                    document.getElementById('supplier').value = produk.supplier;
+                    document.getElementById('tanggal_kadaluarsa').value = produk.tanggal_kadaluarsa;
+                    document.getElementById('deskripsi').value = produk.deskripsi || '';
+                    
+                    currentEditId = id;
+                    document.getElementById('cancelBtn').classList.remove('hidden');
+                    document.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-sync-alt"></i> Update Produk';
+                    
+                    // Scroll ke form
+                    document.getElementById('produkForm').scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Gagal memuat data produk', 'error');
+            }
+        }
+
+        // Fungsi untuk menangani penghapusan data
+        async function handleDelete(event) {
+            const id = event.target.closest('button').getAttribute('data-id');
+            
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                try {
+                    const response = await fetch(API_BASE + 'delete_produk.php', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id: id })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        showAlert('Produk berhasil dihapus!', 'success');
+                        loadProdukData();
+                    } else {
+                        showAlert('Gagal menghapus produk: ' + result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('Gagal menghapus produk', 'error');
+                }
+            }
+        }
+
+        // Fungsi untuk mengatur ulang form
+        function resetForm() {
+            document.getElementById('produkForm').reset();
+            currentEditId = null;
+            document.getElementById('cancelBtn').classList.add('hidden');
+            document.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-save"></i> Simpan Produk';
+            
+            // Set tanggal kadaluarsa default ke 1 tahun dari sekarang
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            document.getElementById('tanggal_kadaluarsa').value = nextYear.toISOString().split('T')[0];
+        }
+
+        // Event listener untuk form submit
+        document.getElementById('produkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Ambil nilai dari form
+            const kode_produk = document.getElementById('kode_produk').value;
+            const nama_produk = document.getElementById('nama_produk').value;
+            const kategori = document.getElementById('kategori').value;
+            const harga_beli = document.getElementById('harga_beli').value;
+            const harga_jual = document.getElementById('harga_jual').value;
+            const stok = document.getElementById('stok').value;
+            const satuan = document.getElementById('satuan').value;
+            const supplier = document.getElementById('supplier').value;
+            const tanggal_kadaluarsa = document.getElementById('tanggal_kadaluarsa').value;
+            const deskripsi = document.getElementById('deskripsi').value;
+            
+            // Validasi
+            if (!kode_produk || !nama_produk || !kategori || !harga_beli || !harga_jual || !stok || !satuan || !supplier || !tanggal_kadaluarsa) {
+                showAlert('Semua field wajib harus diisi!', 'error');
+                return;
+            }
+            
+            if (parseFloat(harga_jual) <= parseFloat(harga_beli)) {
+                showAlert('Harga jual harus lebih tinggi dari harga beli!', 'error');
+                return;
+            }
+            
+            // Siapkan data untuk dikirim
+            const data = {
+                kode_produk: kode_produk,
+                nama_produk: nama_produk,
+                kategori: kategori,
+                harga_beli: parseFloat(harga_beli),
+                harga_jual: parseFloat(harga_jual),
+                stok: parseInt(stok),
+                satuan: satuan,
+                supplier: supplier,
+                tanggal_kadaluarsa: tanggal_kadaluarsa,
+                deskripsi: deskripsi
+            };
+            
+            let url = API_BASE + 'add_produk.php';
+            let method = 'POST';
+            
+            // Jika sedang edit, gunakan update
+            if (currentEditId) {
+                data.id = currentEditId;
+                url = API_BASE + 'update_produk.php';
+                method = 'PUT';
+            }
+            
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (currentEditId) {
+                        showAlert('Produk berhasil diperbarui!', 'success');
+                    } else {
+                        showAlert('Produk berhasil ditambahkan!', 'success');
+                    }
+                    resetForm();
+                    loadProdukData();
+                } else {
+                    showAlert('Gagal menyimpan produk: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Gagal menyimpan produk. Periksa koneksi atau console.', 'error');
+            }
+        });
+
+        // Event listener untuk tombol batal
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+
+        // Event listener untuk filter
+        document.getElementById('filterKategori').addEventListener('change', loadProdukData);
+        document.getElementById('filterStok').addEventListener('change', loadProdukData);
+
+        // Memuat data saat halaman pertama kali dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set tanggal kadaluarsa default ke 1 tahun dari sekarang
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            document.getElementById('tanggal_kadaluarsa').value = nextYear.toISOString().split('T')[0];
+            
+            loadProdukData();
+        });
+    </script>
+</body>
+</html>

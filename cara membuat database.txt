@@ -1,0 +1,20 @@
+CREATE TABLE produk (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    kode_produk VARCHAR(20) NOT NULL UNIQUE,
+    nama_produk VARCHAR(100) NOT NULL,
+    kategori VARCHAR(50) NOT NULL,
+    harga_beli DECIMAL(15,2) NOT NULL,
+    harga_jual DECIMAL(15,2) NOT NULL,
+    stok INT NOT NULL,
+    satuan VARCHAR(20) NOT NULL,
+    supplier VARCHAR(100) NOT NULL,
+    tanggal_kadaluarsa DATE NOT NULL,
+    deskripsi TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO produk (kode_produk, nama_produk, kategori, harga_beli, harga_jual, stok, satuan, supplier, tanggal_kadaluarsa, deskripsi) VALUES
+('FF-001', 'Nugget Ayam Premium', 'Ayam', 25000, 35000, 150, 'pcs', 'Supplier ABC', '2024-12-31', 'Nugget ayam dengan daging pilihan'),
+('FF-002', 'Bakso Sapi Besar', 'Daging Sapi', 40000, 55000, 80, 'kg', 'Supplier XYZ', '2024-10-15', 'Bakso sapi ukuran besar'),
+('FF-003', 'Ikan Fillet Dori', 'Ikan', 30000, 45000, 60, 'kg', 'Supplier Laut', '2024-09-30', 'Ikan dori fillet tanpa tulang');
